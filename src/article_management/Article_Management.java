@@ -4,7 +4,7 @@ public class Article_Management {
 
     public static void main(String[] args) {
         ArticleManager as = new ArticleManager(4);
-        
+
         Article a1 = new Article("Alshareh", "freedomfreedomfreedomfreedomfreedomfreedomfreedomfreedomfreedom", ArticleType.NEWS, "2025-16-07");
         Article a2 = new Article("syria", "freedomfreedomfreedomfreedomfreedomfreedomfreedomfreedomfreedom", ArticleType.NEWS, "2025-16-07");
         Article a3 = new Article("Aljry", "freedomfreedomfreedomfreedomfreedomfreedomfreedomfreedomfreedom", ArticleType.NEWS, "2025-16-07");
@@ -18,22 +18,62 @@ public class Article_Management {
         as.add("Freedom", a4);
         as.add("AI", a5);
         as.add("AI", a6);
-        
+
         System.out.println("");
+
+//        DynamicArray dd = search("ez ez ez abdulrahman jasem khalaf hmood ez abdulrahman , . , . , ., . ,");
+//        dd.print();
+
+    }
+
+//    public static DynamicArray search(String text) {
+//        String[] words = text.toLowerCase().replaceAll("[^a-zA-Z ]", "").split(" ");
+//        DynamicArray result = new DynamicArray();
+//        int index = 0;
+//        for (String word : words) {
+////            Word cuWord = result.find(result.findIndex(word)) ? new Word(word, 1) : result.getItem(0);
+//            if (result.find(cuWord)) {
+//                cuWord.count += 1;
+//            } else {
+//                result.add(cuWord);
+//            }
+//        }
+//        return result;
+//    }
+
+}
+
+class Word {
+
+    String word;
+    int count;
+
+    public Word(String word, int count) {
+        this.word = word;
+        this.count = count;
+    }
+
+    @Override
+    public String toString() {
+        return "-" + word + " : " + count;
     }
 
 }
 
 // -- Article Manager
-class ArticleManager{
+class ArticleManager {
 
     LinkedList[] table;
     int size;
+
+//  The count word repeted
+    DynamicArray words;
 
     public ArticleManager(int capacity) {
         size = capacity;
         table = (LinkedList[]) new LinkedList[capacity];
         init();
+        words = new DynamicArray();
     }
 
     // Get Hash
@@ -53,10 +93,21 @@ class ArticleManager{
         }
     }
 
+//    DynamicArray searshWordsRepeted() {
+//        for (int i = 0; i < size; i++) {
+//            Node cuNode = table[i].head;
+//            while (cuNode != null) {
+//
+//                cuNode.value.getContent();
+//
+//                cuNode = cuNode.next;
+//            }
+//        }
+//    }
 }
 
 // -- Article
-class Article{
+class Article {
 
     private String title;
     private String content;
@@ -377,4 +428,174 @@ class Node {
         this.value = value;
     }
 
+}
+
+// dynamic array
+class DynamicArray {
+
+    Word[] data;
+    int size = 0;
+
+    public DynamicArray() {
+        data = new Word[10];
+    }
+
+    public DynamicArray(int cabacity) {
+        data = new Word[cabacity];
+    }
+
+    public void add(Word item) {
+        if (data.length == size) {
+            enchoreCabacity(size * 2);
+        }
+        data[size] = item;
+        size++;
+    }
+
+    public Word getItem(int index) {
+        return data[index];
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public int getLinght() {
+        return data.length;
+    }
+
+    public void print() {
+        for (int i = 0; i < data.length; i++) {
+            System.out.println(data[i]);
+        }
+    }
+
+    public void enchoreCabacity(int len) {
+        Word[] newData = (Word[]) new Object[len];
+        for (int i = 0; i < size; i++) {
+            newData[i] = data[i];
+        }
+        data = newData;
+    }
+
+    public void incert(Word item, int index) throws Exception {
+        if (index < 0 || index > size) {
+            throw new Exception("invaled index");
+        }
+        if (data.length == size) {
+            enchoreCabacity(size * 2);
+        }
+
+        for (int i = size; i > index; i--) {
+            data[i] = data[i - 1];
+        }
+        data[index] = item;
+        size++;
+    }
+
+    public void delete(int index) throws Exception {
+        if (size == 0) {
+            throw new Exception("The arr is notEmpity");
+        }
+        if (index < 0 || index > size) {
+            throw new Exception("invaled index");
+        }
+        for (int i = index; i < size - 1; i++) {
+            data[i] = data[i + 1];
+        }
+        size--;
+        if (size == data.length / 2) {
+            enchoreCabacity(data.length / 2);
+        } else {
+            data[size] = null;
+        }
+
+    }
+
+    public int findIndex(Word item) {
+
+        for (int i = 0; i < size; i++) {
+            if (item.equals(data[i])) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public boolean find(Word item) {
+        for (int i = 0; i < size; i++) {
+            if (item.equals(data[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+//    public Search<T> findv2(T item) {
+//        Search<T> res = new Search<T>();
+//        for (int i = 0; i < size; i++) {
+//            if (item == data[i]) {
+//                res.index = i;
+//                res.item = item;
+//                break;
+//            }
+//        }
+//        return res;
+//    }
+    public boolean isExist(Word item) {
+        boolean result = false;
+        for (int i = 0; i < size; i++) {
+            if (data[i] == item) {
+                return true;
+            }
+        }
+        return result;
+    }
+
+    public void clear() {
+        for (int i = 0; i < size; i++) {
+            data[i] = null;
+        }
+        size = 0;
+    }
+
+    public void addArray(Word[] arr) {
+        if (size + arr.length >= data.length) {
+            enchoreCabacity(size * 2);
+        }
+        int arrIndex = 0;
+        for (int i = 0; i < arr.length; i++) {
+            data[size] = arr[i];
+            size++;
+        }
+    }
+
+    public void finDelete(Word item) throws Exception {
+//        boolean find=false;
+        for (int i = size; i >= 0; i--) {
+            if (data[i] == item) {
+                this.delete(i);
+            }
+        }
+    }
+
+    public void trimToSize() {
+        if (size < data.length) {
+            enchoreCabacity(size);
+        }
+    }
+
+    public boolean isEmpty() {
+        return (size == 0);
+    }
+
+    public int countItem(Word item) {
+        int count = 0;
+        for (int i = 0; i < size; i++) {
+            if (data[i] == item) {
+                count++;
+            }
+        }
+        return count;
+    }
 }
